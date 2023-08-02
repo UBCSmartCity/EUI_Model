@@ -9,6 +9,7 @@
 # Building name at the front
 # How to only get numbers from the file
 import pandas as pd
+import glob
 
 class process_skyspark:
     
@@ -34,6 +35,9 @@ class process_skyspark:
 
 
     def merge(self, fn1, fn2):
+        
+        
+
         df1 = pd.read_csv(fn1)
         df2 = pd.read_csv(fn2)
         df_col_merged = pd.merge(df1, df2, on=['Timestamp'], how='left')
@@ -135,7 +139,10 @@ path = r'C:\Users\peter.kim\Desktop\EUI\AERL_Elec_Power.csv'
 
 #def __init__(self, file_name, building_name, address)
 f2 = process_skyspark('AERL_Elec_Power.csv', 'AERL', path)
-print(f2.merge('AERL_Elec_Power.csv', 'AERL_Elec_Energy.csv'))
+#print(f2.merge('AERL_Elec_Power.csv', 'AERL_Elec_Energy.csv'))
 #f2.remove_unit()
 
-    
+csv_files = glob.glob('*.{}'.format('csv'))
+df_concat = pd.concat([pd.read_csv(f) for f in csv_files ], axis=0, ignore_index=True)
+df_concat.reset_index(drop=True, inplace=True)
+df_concat.to_csv('-Arranged.csv', index=False)  
