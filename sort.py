@@ -31,10 +31,18 @@ class process_skyspark:
         self.file_name = file_name
         self.building_name = building_name
         self.address = address
-        
+
+
+    def merge(self, fn1, fn2):
+        df1 = pd.read_csv(fn1)
+        df2 = pd.read_csv(fn2)
+        df_col_merged = pd.merge(df1, df2, on=['Timestamp'], how='left')
+        return df_col_merged
+
     def remove_unit(self):
         df = pd.read_csv(self.file_name) # Read csv
           
+        # Detect col and remove appropriate units.
         for column in df:
             
             if ('Timestamp' in column):
@@ -51,10 +59,13 @@ class process_skyspark:
             if ('Consumption' in column):
                 df[column] = df[column].replace('m³', '', regex = True)
         
+        # Store the df into a separate df
+        return df
+        
         # Output the new dataframe as CSV file
-        global new_name
-        new_name = self.address + self.building_name +'.csv'
-        df.to_csv(self.address + self.building_name +'.csv', index=False)
+        #global new_name
+        #new_name = self.building_name +'_New.csv'
+        #df.to_csv(new_name, index=False)
         
      # Re-arrage DF - But before that we have to change the names of the col.
     def arrange(self, new_file_name):
@@ -118,7 +129,13 @@ class df_integral:
     Integrate separate dataset into one
     """
 
-f2 = process_skyspark('AERL_Elec_Ener.csv', 'AERL', r'C:\Users\Peter\Desktop\EUI_Model\New ')
-f2.remove_unit()
+
+
+path = r'C:\Users\peter.kim\Desktop\EUI\AERL_Elec_Power.csv'
+
+#def __init__(self, file_name, building_name, address)
+f2 = process_skyspark('AERL_Elec_Power.csv', 'AERL', path)
+print(f2.merge('AERL_Elec_Power.csv', 'AERL_Elec_Energy.csv'))
+#f2.remove_unit()
 
     
