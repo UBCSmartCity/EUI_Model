@@ -9,10 +9,8 @@
 # Building name at the front
 # How to only get numbers from the file
 import pandas as pd
-import glob
-
 class process_skyspark:
-    
+        
     """ 
     Take in the utilities file, and parase the data in the right column. 
     Consider the building names when iterating through the columns, also consider the
@@ -27,87 +25,68 @@ class process_skyspark:
     
     - THis is case sensitive, can I make it so that it is not?
     """
-    
-    def __init__(self, file_name, building_name, address):
-        self.file_name = file_name
+    def __init__(self, building_name):
         self.building_name = building_name
-        self.address = address
 
-
-    def merge(self, fn1, fn2):
+    # Note we have to merge building-building too
+    # Merge the energy data
+    def merge_building(self, folder_path):
+        EE_df = pd.read_csv(folder_path + '/' + self.building_name + '_Elec_Energy.csv').set_axis(['Timestamp', 'Elec_Energy'], axis = 'columns')
+        EP_df = pd.read_csv(folder_path + '/' + self.building_name + '_Elec_Power.csv').set_axis(['Timestamp', 'Elec_Power'], axis = 'columns')
+        TE_df = pd.read_csv(folder_path + '/' + self.building_name + '_Thrm_Energy.csv').set_axis(['Timestamp', 'Thrm_Energy'], axis = 'columns')
+        TP_df = pd.read_csv(folder_path + '/' + self.building_name + '_Thrm_Power.csv').set_axis(['Timestamp', 'Thrm_Power'], axis = 'columns')
+        WC_df = pd.read_csv(folder_path + '/' + self.building_name + '_Wtr_Cns.csv').set_axis(['Timestamp', 'Wtr_Cns'], axis = 'columns')
         
+        Elec_df = pd.merge(EE_df, EP_df, on=['Timestamp'], how='left')
+        Thrm_df = pd.merge(TE_df, TP_df, on=['Timestamp'], how='left')
+        flag = Elec_df['Timestamp'].equals(Thrm_df['Timestamp'])
+        if (flag) == False: return False 
         
+        Elec_Thrm_df = pd.merge(Elec_df, Thrm_df, on=['Timestamp'], how='left')
+        flag = Elec_Thrm_df['Timestamp'].equals(WC_df['Timestamp'])
+        if (flag) == False: return False 
 
-        df1 = pd.read_csv(fn1)
-        df2 = pd.read_csv(fn2)
-        df_col_merged = pd.merge(df1, df2, on=['Timestamp'], how='left')
-        return df_col_merged
-
-    def remove_unit(self):
-        df = pd.read_csv(self.file_name) # Read csv
-          
-        # Detect col and remove appropriate units.
+        df = pd.merge(Elec_Thrm_df, WC_df, on=['Timestamp'], how='left')
+        
         for column in df:
-            
             if ('Timestamp' in column):
-                df[column] = df[column].replace('T00:00:00-08:00 Los_Angeles', '', regex = True)
-                df[column] = df[column].replace('T00:00:00-07:00 Los_Angeles', '', regex = True)
-                df[['Year', 'Month','Day']] = df[column].str.split('-', expand=True)
-            
-            if ('Energy' in column):
-                df[column] = df[column].replace('kWh', '', regex = True)
-                
-            if ('Power' in column):
-                df[column] = df[column].replace('kW', '', regex = True) 
+                    df[column] = df[column].replace('T00:00:00-08:00 Los_Angeles', '', regex = True)
+                    df[column] = df[column].replace('T00:00:00-07:00 Los_Angeles', '', regex = True)
+                    df[['Year', 'Month','Day']] = df[column].str.split('-', expand=True)
 
-            if ('Consumption' in column):
-                df[column] = df[column].replace('m³', '', regex = True)
-        
-        # Store the df into a separate df
-        return df
-        
-        # Output the new dataframe as CSV file
-        #global new_name
-        #new_name = self.building_name +'_New.csv'
-        #df.to_csv(new_name, index=False)
-        
-     # Re-arrage DF - But before that we have to change the names of the col.
-    def arrange(self, new_file_name):
-        
-        """
-        -parese date and put the parsed in-front
-        -change the col names - such that it dosen't have the building name
-        
-        - Use this after integration
-
-        """
-        
-        df = pd.read_csv(new_file_name)
-        
-        for column in df:
-            if ('Energy' in column):
-                if ('Elec' in column):
-                    df.rename({column: 'Elec_Energy'}, axis=1, inplace=True)
-                if ('HW' in column):
-                    df.rename({column: 'HW_Energy'}, axis=1, inplace=True)
- 
-            if ('Power' in column):
-                if ('Elec' in column):
-                    df.rename({column: 'Elec_Power'}, axis=1, inplace=True)
-                if ('HW' in column):
-                    df.rename({column: 'HW_Power'}, axis=1, inplace=True) 
-                    
-            if ('Consumption' in column):
-                df.rename({column: 'DW_Volume'}, axis=1, inplace=True) 
-                
-        
         df = df.drop('Timestamp', axis = 1)
         
-        # We have more columns such as area, temp, humidity and stuff like that.
-        df = df.reindex(columns=['Year', 'Month', 'Day', 'Elec_Energy', 'Elec_Power', 'HW_Energy', 'HW_Power', 'DW_Volume'])
+        # We have more columns such as area, temp, humidity and stuff like that. Get everyhting I can from the Skyspark
+        df = df.reindex(columns=['Year', 'Month', 'Day', 'Elec_Energy', 'Elec_Power', 'Thrm_Energy', 'Thrm_Power', 'Wtr_Cns'])
         
-        print(df)
-        df.to_csv(self.address + self.building_name +'-Arranged.csv', index=False)
+        #print(df)
+        df.to_csv(self.building_name + '_merged.csv', index=False)
+        return df
+    
+    def remove_unit(self, merged_file):
+        m_df = merged_file # Read csv
+          
+        # Detect col and remove appropriate units.
+        for column in m_df:
+            
+            if ('Energy' in column):
+                m_df[column] = m_df[column].replace('kWh', '', regex = True)
+                
+            if ('Power' in column):
+                m_df[column] = m_df[column].replace('kW', '', regex = True) 
+
+            if ('Cns' in column):
+                m_df[column] = m_df[column].replace('m³', '', regex = True)
+        
+        # Store the df into a separate df
+        m_df.to_csv(self.building_name + '_merged_nounit.csv', index=False)
+        return m_df
+
+    def validate(self):
+    # Count number of nan
+    # Replace nan with 0
+        pass
+
 
 class error_detection:
     
@@ -134,15 +113,11 @@ class df_integral:
     """
 
 
+folder_path = r''
+f = process_skyspark('ChemBio')
+a = f.merge(folder_path)
+b = f.remove_unit(a)
+c = b.fillna(0)
 
-path = r'C:\Users\peter.kim\Desktop\EUI\AERL_Elec_Power.csv'
+print(c)
 
-#def __init__(self, file_name, building_name, address)
-f2 = process_skyspark('AERL_Elec_Power.csv', 'AERL', path)
-#print(f2.merge('AERL_Elec_Power.csv', 'AERL_Elec_Energy.csv'))
-#f2.remove_unit()
-
-csv_files = glob.glob('*.{}'.format('csv'))
-df_concat = pd.concat([pd.read_csv(f) for f in csv_files ], axis=0, ignore_index=True)
-df_concat.reset_index(drop=True, inplace=True)
-df_concat.to_csv('-Arranged.csv', index=False)  
