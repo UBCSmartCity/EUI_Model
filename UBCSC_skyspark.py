@@ -7,7 +7,7 @@ Purpose: Handle skyspark data with pandas
 import pandas as pd
 
 # Global Variable
-list_of_col = ['Year', 'Month', 'Day', 'UBC_Temp', 'UBC_HDD', 'UBC_CDD', 'UBC_Humid', 
+list_of_col = ['Timestamp', 'Year', 'Month', 'Day', 'UBC_Temp', 'UBC_HDD', 'UBC_CDD', 'UBC_Humid', 
                 'Elec_Energy', 'Elec_Power', 'Thrm_Energy', 'Thrm_Power', 'Wtr_Cns',
                 'Elec_EUI', 'Thrm_EUI', 'Total_EUI',
                 'Gross_Floor_Area', 'Building_Height', 'No_of_Floor', 'Inner_V', 'Glazing_A', 
@@ -21,7 +21,6 @@ class skyspark:
     - fill_data
     - ...
     """
-
     def __init__(self, building_name):
         self.building_name = building_name
 
@@ -32,23 +31,26 @@ class skyspark:
         - thermal(hot water) energy/power
         - water consumption
 
-        return value: m_df (merged dataframe)
+        argument - folder_path
+            Path to the folder that contains all the csv files
+        return variable - m_df
+            Merged dataframe
         """
 
-        # Read csv files and the column name according to the data if represents.
+        # Read csv files and the column name according to the data if represents
         EE_df = pd.read_csv(folder_path + '/' + self.building_name + '_Elec_Energy.csv').set_axis(['Timestamp', 'Elec_Energy'], axis = 'columns')
         EP_df = pd.read_csv(folder_path + '/' + self.building_name + '_Elec_Power.csv').set_axis(['Timestamp', 'Elec_Power'], axis = 'columns')
         TE_df = pd.read_csv(folder_path + '/' + self.building_name + '_Thrm_Energy.csv').set_axis(['Timestamp', 'Thrm_Energy'], axis = 'columns')
         TP_df = pd.read_csv(folder_path + '/' + self.building_name + '_Thrm_Power.csv').set_axis(['Timestamp', 'Thrm_Power'], axis = 'columns')
         WC_df = pd.read_csv(folder_path + '/' + self.building_name + '_Wtr_Cns.csv').set_axis(['Timestamp', 'Wtr_Cns'], axis = 'columns')
         
-        # Merge of energy and power (for eletrical and thermal). Also validate the data by comparing the timestamps on each file.
+        # Merge of energy and power (for eletrical and thermal). Also validate the data by comparing the timestamps on each file
         Elec_df = pd.merge(EE_df, EP_df, on=['Timestamp'], how='left')  # Merge electrical energy/power
         Thrm_df = pd.merge(TE_df, TP_df, on=['Timestamp'], how='left')  # Merge themeral energy/power
         flag = Elec_df['Timestamp'].equals(Thrm_df['Timestamp'])        # Compare timestamp column
         if (flag) == False: return False 
         
-        # Merge of eletrical and thermal.
+        # Merge of eletrical and thermal
         Elec_Thrm_df = pd.merge(Elec_df, Thrm_df, on=['Timestamp'], how='left')
         flag = Elec_Thrm_df['Timestamp'].equals(WC_df['Timestamp'])
         if (flag) == False: return False 
@@ -56,71 +58,103 @@ class skyspark:
         # Merge of electrical+thermal and water consumption
         m_df = pd.merge(Elec_Thrm_df, WC_df, on=['Timestamp'], how='left')
         
-        # 
+        # Iterate through the columns and remove units or parse them
         for column in m_df:
-            if ('Timestamp' in column):
-                    m_df[column] = m_df[column].replace('T00:00:00-08:00 Los_Angeles', '', regex = True)
-                    m_df[column] = m_df[column].replace('T00:00:00-07:00 Los_Angeles', '', regex = True)
-                    m_df[['Year', 'Month','Day']] = m_df[column].str.split('-', expand=True)
 
+            # Parse the timestamp column into Year, Month, and Day
+            if ('Timestamp' in column):
+                    
+                    # Use temporary column to split Y, M, and D
+                    m_df['temp'] = m_df[column] 
+                    m_df['temp'] = m_df['temp'].replace('T00:00:00-08:00 Los_Angeles', '', regex = True)    # Get only yyyy-mm-dd
+                    m_df['temp'] = m_df['temp'].replace('T00:00:00-07:00 Los_Angeles', '', regex = True)    # Cover two timestamps
+                    m_df[['Year', 'Month', 'Day']] = m_df['temp'].str.split('-', expand=True)               # Insert new column
+                    
+                    # Parse the original timestamp
+                    m_df[column] = m_df[column].replace(' Los_Angeles', 'PST', regex = True)
+                    m_df[column] = m_df[column].replace(' Los_Angeles', 'PST', regex = True)
+
+                    # Delete the temporary column
+                    m_df = m_df.drop('temp', axis = 1)
+            
+            # Remove units
             if ('Energy' in column):
                 m_df[column] = m_df[column].replace('kWh', '', regex = True)
-                
             if ('Power' in column):
                 m_df[column] = m_df[column].replace('kW', '', regex = True) 
-
             if ('Cns' in column):
                 m_df[column] = m_df[column].replace('m³', '', regex = True)
 
-        m_df = m_df.drop('Timestamp', axis = 1)
-        m_df = m_df.reindex(columns=list_of_col)
+        # Re-arrange the dataframe
+        m_df = m_df.reindex(columns=list_of_col)    
         
         return m_df
 
-    def compute_eui(self, edited_file):
-        ce_df = pd.read_csv(edited_file)
-
-        # if not empty do computation
-        if ce_df['Gross_Floor_Area'].empty: return False
-        else:
-            ce_df['Elec_EUI'] = ce_df['Elec_Energy'] / ce_df['Gross_Floor_Area']
-            ce_df['Thrm_EUI'] = ce_df['Thrm_Energy'] / ce_df['Gross_Floor_Area']
-            ce_df['Total_EUI'] = ce_df['Thrm_EUI'] + ce_df['Elec_EUI']
-        return ce_df
+    def csv_output(self, dataframe, folder_path, function):
+        dataframe.to_csv(folder_path + function + '.csv', index=False)
 
     class operator:
+        """
+        Perform data manipulation or simple computation such as:
+        - fill column with value
+        - compute EUI
+        ...
+        """
         def __init__(self, dataframe):
             self.dataframe = dataframe
             
-        # For building attributes
-        def fill_data(self):
-            add_df = pd.read_csv(self.dataframe)
+        def fill_col(self):
+            """
+            Fill a given column in the list_of_col with a desired integer value. 
+            """
+            # Read dataframe
+            fill_df = pd.read_csv(self.dataframe)
 
-            # Check
-            if list(add_df) == list_of_col: print("list of col:\n" + list_of_col) 
+            # Check if the columns matches list_of_col
+            if list(fill_df) == list_of_col: print("list of col:\n" + list_of_col) 
             else: return False
             
-            # Get User input
+            # User interface
             user_col = input("Enter column: ")
-            while user_col not in list(add_df): 
+
+                # Get user input untill the input matches to one of the items in the list_of_col
+            while user_col not in list(fill_df): 
                 print("Please enter a column name that is in the list_of_col\n")
                 user_col = input("Enter column: ")
-
+            
+                # Get the desired integer value from the user and confirm the value before proceeding
             while True:
-
                 user_val = None
                 while user_val is None:
                     try: user_val = int(input("Enter value: "))
                     except ValueError: print("Invalid input")
 
+                # User confirmation
                 user_confirm = input('Confirm Value: ' + str(user_val) + ' (yes or no)\n')
                 if user_confirm == 'yes': break
                 else: user_val = None
 
             # Fill the value to column
-            add_df[user_col] = user_val
+            fill_df[user_col] = user_val
 
-            return add_df
+            return fill_df
+        
+        def compute_eui(self, edited_file):
+            """
+            Compute EUI if Gross_Floor_Area is not empty
+            """
+
+            # Read dataframe
+            ce_df = pd.read_csv(edited_file)
+
+            # If Gross_Floor_Area is not empty, compute EUI
+            if ce_df['Gross_Floor_Area'].empty: return False
+            else:
+                ce_df['Elec_EUI'] = ce_df['Elec_Energy'] / ce_df['Gross_Floor_Area']
+                ce_df['Thrm_EUI'] = ce_df['Thrm_Energy'] / ce_df['Gross_Floor_Area']
+                ce_df['Total_EUI'] = ce_df['Thrm_EUI'] + ce_df['Elec_EUI']
+
+            return ce_df
 
 class error_detection:
     
@@ -149,7 +183,11 @@ class df_integral:
 building_name = 'ChemBio'; merge = '_merged'; edit = '_edited'
 in_path = r'C:\Users\peter.kim\Desktop\EUI\ChemBio'
 out_path = in_path + '/' + '_' + building_name
-f = skyspark(building_name)
+
+a = skyspark(building_name)
+b = a.merge_energy(in_path)
+a.csv_output(b, out_path, merge)
+
 
 
 # merge all files in the folder
