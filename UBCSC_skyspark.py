@@ -95,10 +95,7 @@ class skyspark:
 
     class operator:
         """
-        Perform data manipulation or simple computation such as:
-        - fill column with value
-        - compute EUI
-        ...
+        Perform data manipulation or simple computation on dataframe
         """
         def __init__(self, dataframe):
             self.dataframe = dataframe
@@ -111,7 +108,7 @@ class skyspark:
             fill_df = pd.read_csv(self.dataframe)
 
             # Check if the columns matches list_of_col
-            if list(fill_df) == list_of_col: print("list of col:\n" + list_of_col) 
+            if list(fill_df) == list_of_col: print(list_of_col) 
             else: return False
             
             # User interface
@@ -139,13 +136,13 @@ class skyspark:
 
             return fill_df
         
-        def compute_eui(self, edited_file):
+        def compute_eui(self):
             """
             Compute EUI if Gross_Floor_Area is not empty
             """
 
             # Read dataframe
-            ce_df = pd.read_csv(edited_file)
+            ce_df = pd.read_csv(self.dataframe)
 
             # If Gross_Floor_Area is not empty, compute EUI
             if ce_df['Gross_Floor_Area'].empty: return False
@@ -156,49 +153,21 @@ class skyspark:
 
             return ce_df
 
-class error_detection:
-    
-    """
-    Takes in a csv file and depending on what the user wants to detect as an error,
-    it presents its analysis.
-    
-    For types of errors, there are:
-    - Missing values
-    - 
-    """
-    
-    def __init__(self, file_name, type_of_error):
-        self.file_name = file_name
-        self.type_of_error = type_of_error
-
-    # detect the missing value, and tell the date + col in which the value is missing.  
-    def missing_value(self):
-        pass
- 
-class df_integral:
-    """
-    Integrate separate dataset into one
-    """
-
-building_name = 'ChemBio'; merge = '_merged'; edit = '_edited'
-in_path = r'C:\Users\peter.kim\Desktop\EUI\ChemBio'
+building_name = 'ChemSouth'; merge = '_merged'; edit = '_edited'
+in_path = r'/Users/peter/Desktop/EUI/ChemSouth'
 out_path = in_path + '/' + '_' + building_name
-
 a = skyspark(building_name)
-b = a.merge_energy(in_path)
-a.csv_output(b, out_path, merge)
 
 
+# Merging files
+#b = a.merge_energy(in_path)
+#a.csv_output(b, out_path, merge)
 
-# merge all files in the folder
-#a = f.merge_energy(folder_path)
+# Adding values to the dataframe
+c = a.operator(in_path + '/' + '_' + building_name + '' + merge + '.csv').fill_col()
+a.csv_output(c, out_path, edit)
 
-# fill in any other column values
-#b = skyspark.operator( folder_path + '/' + '_' + building_name + '_merged.csv').fill_data()
-
-# compute eui
-#c = f.compute_eui(folder_path + '/' + '_' + building_name + '_edited.csv')
-
-#a.to_csv(folder_path + '/' + '_' +building_name + '_merged.csv', index=False)
-#c.to_csv(folder_path + '/' + '_' +building_name + '_edited.csv', index=False)
+# Computing EUI
+#d = a.operator(in_path + '/' + '_' + building_name + '' + edit + '.csv').compute_eui()
+#a.csv_output(d, out_path, edit)
 
