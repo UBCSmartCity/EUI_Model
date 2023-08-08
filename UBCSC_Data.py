@@ -7,21 +7,24 @@ Purpose: Handle skyspark data with pandas
 import pandas as pd
 
 # Global Variable
+# Note:
 #   Thrm = Thermal (Hot Water)
 #   Wtr = Water
 #   Conf = confidence factor
 #   FSP = Floor Space Percentage
 #   excwtr = Exclude Water Usage Intensity
-   
 list_of_col = [ 'Timestamp', 'Year', 'Month', 'Day', 'UBC_Temp', 'UBC_HDD', 'UBC_CDD', 'UBC_Humid', 
                 'Elec_Energy', 'Elec_Power', 'Elec_ConF','Thrm_Energy', 'Thrm_Power', 'Thrm_ConF','Wtr_Cns', 'Wtr_Conf'
-                'Elec_EUI', 'Thrm_EUI', 'Wtr_EUI', 'Total_EUI_excwtr',
+                'Elec_EUI', 'Thrm_EUI', 'Wtr_WUI', 'Total_EUI_excwtr',
                 'Built_Year', 'Gross_Floor_Area', 'FSP_Classroom', 'FSP_Lab', 'FSP_Library', 'FSP_Office',
                 'MAX_Floor', 'BLDG_Height' , 'Inner_V', 'Glazing_A', 
-                'WWR', 'WFA', 'FA_SA', 'Operable_Window', 'Orientation', 'Adjacency',
+                'WWR', 'WFA', 'FA_SA', 
+                'Operable_Window', 'Orientation', 'Adjacency',
                 'NW_Facade_A', 'SW_Facade_A', 'NE_Facade_A', 'SE_Facade_A'
                 'Constr_Type' ,'Green_Status']
 
+
+# Skyspark
 class skyspark:
     """ 
     Process energy data available from UBC Skyspark, as well as provide tools such as:
@@ -157,7 +160,7 @@ class skyspark:
             else:
                 ce_df['Elec_EUI'] = ce_df['Elec_Energy'] / ce_df['Gross_Floor_Area']
                 ce_df['Thrm_EUI'] = ce_df['Thrm_Energy'] / ce_df['Gross_Floor_Area']
-                ce_df['Wtr_EUI'] = ce_df['Wtr_Cns'] / ce_df['Gross_Floor_Area']
+                ce_df['Wtr_WUI'] = ce_df['Wtr_Cns'] / ce_df['Gross_Floor_Area']
                 ce_df['Total_EUI_excwtr'] = ce_df['Thrm_EUI'] + ce_df['Elec_EUI']
 
             return ce_df
