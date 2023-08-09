@@ -23,6 +23,16 @@ This script automates and simplifies the process of acquiring data from both Sky
 a = 'Hello world';
 ```
 
+```
+Operational directiory
+UBCSC_data.py
+dataset
+    -> ubcv_buildings
+        -> ubcv_buildings.geojson
+        -> BuildingName
+            -> BuildingName_TypeofMeter_TypeofMeasurement.csv
+```
+
 #### List_of_Col Description
 
 

@@ -165,9 +165,18 @@ class skyspark:
 
             return ce_df
 
-building_name = 'Hennings'; merge = '_merged'; edit = '_edited'
-in_path = r'C:\Users\Peter\Desktop\EUI_Model\dataset\Hennings'
-out_path = in_path + '/' + '_' + building_name
+
+merge = '_merged'; edit = '_edited'
+
+# Setting up the calls
+building_name = 'Hennings' 
+in_path = r'C:\Users\Peter\Desktop\EUI_Model\dataset\Hennings'  # Folder that contains all 5 files
+                                                                # Make sure that the naming covention of all files matches that of
+                                                                # Building_Name_TypeofMeter_TypeofMeasurement
+out_path = in_path + '/' + '_' + building_name                  # Store the new file in the name folder with edited names
+# Note that once naming conventions are set, the only thing the user has to change is building name and input folder path.
+
+# Execution
 a = skyspark(building_name)
 
 # Merging files
