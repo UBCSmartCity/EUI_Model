@@ -1,6 +1,46 @@
 import geopandas as gpd
 building_info = gpd.read_file(r'C:\Users\peter.kim\Desktop\EUI\EUI_Model\ubcv_buildings.geojson')
-print(building_info)
+# for col in building_info:
+#     print(col)
+building_info['NAME'].to_csv("names.csv")
+
+# Columns
+# BLDG_UID
+# NAME
+# BLDG_CODE
+# SHORTNAME
+# POSTAL_CODE
+# PRIMARY_ADDRESS
+# CONSTR_STATUS
+# OCCU_DATE
+# BLDG_USAGE
+# BLDG_SEC_USAGE
+# JURISDICTION
+# NEIGHBOURHOOD
+# MANAGE_ORG
+# BLDG_STATE
+# GREEN_STATUS
+# CONSTR_TYPE
+# MAX_FLOORS
+# BLDG_HEIGHT
+# GBA
+# REC_IDS
+# HAS_SUBBLDGS
+# GEOM_SOURCE
+# NOTES
+# CREATED_USER
+# CREATED_DATE
+# LAST_EDITED_USER
+# LAST_EDITED_DATE
+# BLDG_FORM
+# BLDG_CONDITION
+# ACCESSIBILITY_RATING
+# BLDG_MAINTENANCE
+# BLDG_CLASS
+# PROPERTY_TYPE
+# LABEL_NAME
+# LABEL_CLASS
+# geometry
 
 
 
