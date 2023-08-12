@@ -5,6 +5,7 @@ Purpose: Handle skyspark data with pandas
 """
 # Package
 import pandas as pd
+import geopandas as gpd
 
 # Global Variable
 # Note:
@@ -13,29 +14,35 @@ import pandas as pd
 #   Conf = confidence factor
 #   FSP = Floor Space Percentage
 #   excwtr = Exclude Water Usage Intensity
-list_of_col = [ 'Timestamp', 'Year', 'Month', 'Day', 'UBC_Temp', 'UBC_HDD', 'UBC_CDD', 'UBC_Humid', 
+list_of_col = [ 'BLDG_UID', 'Timestamp', 'Year', 'Month', 'Day', 'UBC_Temp', 'UBC_HDD', 'UBC_CDD', 'UBC_Humid', 
                 'Elec_Energy', 'Elec_Power', 'Elec_ConF','Thrm_Energy', 'Thrm_Power', 'Thrm_ConF','Wtr_Cns', 'Wtr_Conf'
                 'Elec_EUI', 'Thrm_EUI', 'Wtr_WUI', 'Total_EUI_excwtr',
-                'Built_Year', 'Gross_Floor_Area', 'FSP_Classroom', 'FSP_Lab', 'FSP_Library', 'FSP_Office',
-                'MAX_Floor', 'BLDG_Height' , 'Inner_V', 'Glazing_A', 
-                'WWR', 'WFA', 'FA_SA', 
+                'Occu_Date', 'Constr_Type', 'Condition', 'Green_Status', 'MAX_Floors', 'BLDG_Height', 
+                'GFA', 'GBA', 'FSP_Classroom', 'FSP_Lab', 'FSP_Library', 'FSP_Office',
+                'WWR', 'WFA', 'FA_SA', 'Inner_V', 'Glazing_A', 
                 'Operable_Window', 'Orientation', 'Adjacency',
                 'NW_Facade_A', 'SW_Facade_A', 'NE_Facade_A', 'SE_Facade_A'
-                'Constr_Type' ,'Green_Status']
+                ]
 
+# Columns from GeoJSON
+# Building Unique ID
+# Built Year(OCCU_DATE), Green_Status (GREEN_STATUS), Constr_Type (CONSTR_TYPE), Max_Floors (MAX_FLOORS)
+# BLDG_Height (BLDG_HEIGHT), GBA,
 
-# Skyspark
-class skyspark:
+class data:
     """ 
     Process energy data available from UBC Skyspark, as well as provide tools such as:
     - compute_eui
     - fill_data
     - ...
+    
+    Instead of having a completely automated process, the functions to spot mis-match or the error in the dataset easier.
     """
-    def __init__(self, building_name):
+    def __init__(self, building_name, folder_path):
         self.building_name = building_name
+        self.folder_path = folder_path
 
-    def merge_energy(self, folder_path):
+    def merge_5(self):
         """
         Merge & parse 5 data files available from UBC Skyspark and re-format the csv files to our needs. 5 data includes: 
         - electrical energy/power
@@ -49,11 +56,11 @@ class skyspark:
         """
 
         # Read csv files and the column name according to the data if represents
-        EE_df = pd.read_csv(folder_path + '/' + self.building_name + '_Elec_Energy.csv').set_axis(['Timestamp', 'Elec_Energy'], axis = 'columns')
-        EP_df = pd.read_csv(folder_path + '/' + self.building_name + '_Elec_Power.csv').set_axis(['Timestamp', 'Elec_Power'], axis = 'columns')
-        TE_df = pd.read_csv(folder_path + '/' + self.building_name + '_Thrm_Energy.csv').set_axis(['Timestamp', 'Thrm_Energy'], axis = 'columns')
-        TP_df = pd.read_csv(folder_path + '/' + self.building_name + '_Thrm_Power.csv').set_axis(['Timestamp', 'Thrm_Power'], axis = 'columns')
-        WC_df = pd.read_csv(folder_path + '/' + self.building_name + '_Wtr_Cns.csv').set_axis(['Timestamp', 'Wtr_Cns'], axis = 'columns')
+        EE_df = pd.read_csv(self.folder_path + '/' + self.building_name + '_Elec_Energy.csv').set_axis(['Timestamp', 'Elec_Energy'], axis = 'columns')
+        EP_df = pd.read_csv(self.folder_path + '/' + self.building_name + '_Elec_Power.csv').set_axis(['Timestamp', 'Elec_Power'], axis = 'columns')
+        TE_df = pd.read_csv(self.folder_path + '/' + self.building_name + '_Thrm_Energy.csv').set_axis(['Timestamp', 'Thrm_Energy'], axis = 'columns')
+        TP_df = pd.read_csv(self.folder_path + '/' + self.building_name + '_Thrm_Power.csv').set_axis(['Timestamp', 'Thrm_Power'], axis = 'columns')
+        WC_df = pd.read_csv(self.folder_path + '/' + self.building_name + '_Wtr_Cns.csv').set_axis(['Timestamp', 'Wtr_Cns'], axis = 'columns')
         
         # Merge of energy and power (for eletrical and thermal). Also validate the data by comparing the timestamps on each file
         Elec_df = pd.merge(EE_df, EP_df, on=['Timestamp'], how='left')  # Merge electrical energy/power
@@ -101,8 +108,40 @@ class skyspark:
         
         return m_df
 
-    def csv_output(self, dataframe, folder_path, function):
-        dataframe.to_csv(folder_path + function + '.csv', index=False)
+    def geojson(self, dataframe, json_path):
+        bldg_info = gpd.read_file(json_path)
+        geo_df = pd.read_csv(dataframe)
+        
+        
+        def geo_row():
+            row = 0
+            flag = 0
+            for name in bldg_info['NAME']:
+                row = row + 1
+                if self.building_name in name:
+                    flag = 1
+                    i = row - 1
+            
+            return flag, i
+         
+        index = geo_row()
+        
+        if index[0] != 0:
+            geo_df['BLDG_UID'] = bldg_info['BLDG_UID'][index[1]]
+            geo_df['Occu_Date'] = bldg_info['OCCU_DATE'][index[1]]
+            geo_df['Condition'] = bldg_info['BLDG_CONDITION'][index[1]]
+            geo_df['Green_Status'] = bldg_info['GREEN_STATUS'][index[1]]        
+            geo_df['Constr_Type'] = bldg_info['CONSTR_TYPE'][index[1]]
+            geo_df['Max_Floors'] = bldg_info['MAX_FLOORS'][index[1]]
+            geo_df['BLDG_Height'] = bldg_info['BLDG_HEIGHT'][index[1]]
+            geo_df['GBA'] = bldg_info['GBA'][index[1]]
+        else:
+            print("Building name not in GeoJSON")
+             
+        return geo_df
+
+    def csv_output(self, dataframe, function):
+        dataframe.to_csv(self.folder_path + '/' + '_' + self.building_name + '_' +function + '.csv', index=False)
 
     class operator:
         """
@@ -166,22 +205,28 @@ class skyspark:
             return ce_df
 
 
-merge = '_merged'; edit = '_edited'
+merge = 'merged'; edit = 'edited'
 
 # Setting up the calls
-building_name = 'Hennings' 
-in_path = r'C:\Users\Peter\Desktop\EUI_Model\dataset\Hennings'  # Folder that contains all 5 files
+building_name = 'Henn' 
+in_path = r'/Users/peter/Desktop/EUI/Hennings'  # Folder that contains all 5 files
                                                                 # Make sure that the naming covention of all files matches that of
                                                                 # Building_Name_TypeofMeter_TypeofMeasurement
 out_path = in_path + '/' + '_' + building_name                  # Store the new file in the name folder with edited names
 # Note that once naming conventions are set, the only thing the user has to change is building name and input folder path.
 
+json_path = r'/Users/peter/Desktop/EUI/EUI_Model/ubcv_buildings.geojson'
+
 # Execution
-a = skyspark(building_name)
+a = data(building_name, in_path)
 
 # Merging files
-b = a.merge_energy(in_path)
-a.csv_output(b, out_path, merge)
+b = a.merge_5()
+a.csv_output(b, merge)
+
+# Get data from GeoJSON
+c = a.geojson(r'/Users/peter/Desktop/EUI/Hennings/_Henn_merged.csv', json_path)
+a.csv_output(c, edit)
 
 # Adding values to the merged dataframe
 #c = a.operator(in_path + '/' + '_' + building_name + '' + merge + '.csv').fill_col()

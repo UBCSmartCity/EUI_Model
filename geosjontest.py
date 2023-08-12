@@ -1,46 +1,56 @@
 import geopandas as gpd
-building_info = gpd.read_file(r'C:\Users\peter.kim\Desktop\EUI\EUI_Model\ubcv_buildings.geojson')
-# for col in building_info:
-#     print(col)
-building_info['NAME'].to_csv("names.csv")
+building_info = gpd.read_file(r'/Users/peter/Desktop/EUI/EUI_Model/ubcv_buildings.geojson')
+
+def test():
+    x = 0   
+    for name in building_info['NAME']:
+        x = x + 1
+        if "Henn" in name:
+            return x - 1
+
+row = test()
+id = building_info['NAME'][row]
+print(id)
+    
+
 
 # Columns
-# BLDG_UID
-# NAME
-# BLDG_CODE
-# SHORTNAME
-# POSTAL_CODE
-# PRIMARY_ADDRESS
-# CONSTR_STATUS
-# OCCU_DATE
-# BLDG_USAGE
-# BLDG_SEC_USAGE
-# JURISDICTION
-# NEIGHBOURHOOD
-# MANAGE_ORG
-# BLDG_STATE
-# GREEN_STATUS
-# CONSTR_TYPE
-# MAX_FLOORS
-# BLDG_HEIGHT
-# GBA
-# REC_IDS
-# HAS_SUBBLDGS
-# GEOM_SOURCE
-# NOTES
-# CREATED_USER
-# CREATED_DATE
-# LAST_EDITED_USER
-# LAST_EDITED_DATE
-# BLDG_FORM
-# BLDG_CONDITION
-# ACCESSIBILITY_RATING
-# BLDG_MAINTENANCE
-# BLDG_CLASS
-# PROPERTY_TYPE
-# LABEL_NAME
-# LABEL_CLASS
-# geometry
+# BLDG_UID          y
+# NAME              n    
+# BLDG_CODE         n
+# SHORTNAME         n
+# POSTAL_CODE       n
+# PRIMARY_ADDRESS   n
+# CONSTR_STATUS     n
+# OCCU_DATE         y
+# BLDG_USAGE        n
+# BLDG_SEC_USAGE    n
+# JURISDICTION      n
+# NEIGHBOURHOOD     n
+# MANAGE_ORG        n
+# BLDG_STATE        n   
+# GREEN_STATUS      y
+# CONSTR_TYPE       y
+# MAX_FLOORS        y
+# BLDG_HEIGHT       y
+# GBA               y
+# REC_IDS           n
+# HAS_SUBBLDGS      n
+# GEOM_SOURCE       n
+# NOTES             n
+# CREATED_USER      n
+# CREATED_DATE      n
+# LAST_EDITED_USER  n
+# LAST_EDITED_DATE  n   
+# BLDG_FORM         n
+# BLDG_CONDITION    n
+# ACCESSIBILITY_RATING  n
+# BLDG_MAINTENANCE  n
+# BLDG_CLASS        n
+# PROPERTY_TYPE     n
+# LABEL_NAME        n
+# LABEL_CLASS       n
+# geometry          n
 
 
 
