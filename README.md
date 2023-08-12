@@ -4,14 +4,13 @@
 + [About](#about)
 + [Getting Started](#getting_started)
 + [Usage](#usage)
-+ [Contributing](../CONTRIBUTING.md)
 
 ## About
 The goal of this research project is to advance the accuracy of energy demand forecasting for a group of buildings, thereby minimizing the variability in estimating base load and storage requirements for a given area. And doing so, one can significantly reduce the costs associated with incorporating renewable energy into existing energy systems or developing a new sustainable infrastructure.
 
 This script automates and simplifies the process of acquiring data from both Skyspark and GeoJSON.
 
-## Getting Started
+## Getting Started <a name = "getting_started"></a>
 #### Operational Directiory
 ```
 EUI_MODEL
@@ -38,7 +37,7 @@ dataset/
 
 ### Installing
 
-## Usage 
+## Usage <a name = "usage"></a>
 
 #### List_of_Col Description
 
