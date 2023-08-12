@@ -208,14 +208,14 @@ class data:
 merge = 'merged'; edit = 'edited'
 
 # Setting up the calls
-building_name = 'Henn' 
-in_path = r'/Users/peter/Desktop/EUI/Hennings'  # Folder that contains all 5 files
+building_name = 'Hennings' 
+in_path = r'C:\Users\Peter\Desktop\Project\EUI_Model\dataset\Hennings'  # Folder that contains all 5 files
                                                                 # Make sure that the naming covention of all files matches that of
                                                                 # Building_Name_TypeofMeter_TypeofMeasurement
 out_path = in_path + '/' + '_' + building_name                  # Store the new file in the name folder with edited names
 # Note that once naming conventions are set, the only thing the user has to change is building name and input folder path.
 
-json_path = r'/Users/peter/Desktop/EUI/EUI_Model/ubcv_buildings.geojson'
+json_path = r'C:\Users\Peter\Desktop\Project\EUI_Model\ubcv_buildings.geojson'
 
 # Execution
 a = data(building_name, in_path)
@@ -225,7 +225,7 @@ b = a.merge_5()
 a.csv_output(b, merge)
 
 # Get data from GeoJSON
-c = a.geojson(r'/Users/peter/Desktop/EUI/Hennings/_Henn_merged.csv', json_path)
+c = a.geojson(r'C:\Users\Peter\Desktop\Project\EUI_Model\dataset\Hennings\_Hennings_merged.csv', json_path)
 a.csv_output(c, edit)
 
 # Adding values to the merged dataframe
