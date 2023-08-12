@@ -1,37 +1,44 @@
 # EUI_Model
 
-## Research Overview
+## Table of Contents
++ [About](#about)
++ [Getting Started](#getting_started)
++ [Usage](#usage)
++ [Contributing](../CONTRIBUTING.md)
+
+## About
 The goal of this research project is to advance the accuracy of energy demand forecasting for a group of buildings, thereby minimizing the variability in estimating base load and storage requirements for a given area. And doing so, one can significantly reduce the costs associated with incorporating renewable energy into existing energy systems or developing a new sustainable infrastructure.
 
-To achieve this, we begin by training carefully selected models using datasets obtained from the University of British Columbia (UBC). This dataset encompasses various parameters, including Energy Usage Intensity (EUI), building parameters, weather conditions, and geological factors. By leveraging this information, our model should be able to accurately predict the energy demand on a daily, monthly, and yearly basis. In validating the accuracy of our models, we compare our predictions with actual energy consumption records obtained from UBC Skyspark and UBC's sustainability reports. This process confirms the soundness of our approach and provides the confidence factor which can be used in the analysis process. 
+This script automates and simplifies the process of acquiring data from both Skyspark and GeoJSON.
 
-After evaluating the model's performance in predicting energy demand, our research focuses on connecting the demand side with the supply side. This integration allows us to determine the optimal base load and storage requirements for the area under consideration, which plays a vital role in estimating the cost and shaping the energy infrastructure. 
-
-In summary, our research aims to predict energy demand through comprehensive energy data analysis and subsequently determine the optimal base load and storage requirements, leading to cost reduction in energy production. By analyzing and comparing various model development methods, we gain valuable insights into the most effective approaches across different contexts. Through these efforts, we contribute to the broader goal of advancing renewable energy integration and sustainability in the energy sector.
-
-## Script 
-This script automates and simplifies the process of acquiring data from both Skyspark and GeoJSON sources.
-
-### Tasks
-- [ ] Simplify the merge, fill_col(), and compute EUI process
-- [ ] Add GeoJson capability
-    - Reasech through building code -> and grab info -> fill col
-
-
-### User Guide
+## Getting Started
+#### Operational Directiory
 ```
-a = 'Hello world';
+EUI_MODEL
+README.md
+LICENSE.md
+.gitignore
+requirements.txt
+data_prep/
+    main/
+    test/
+dataset/
+    ubcv_buildings/
+        ubcv_buildings.geojson
+        BuildingName1/
+            _BuildingName1_merged.csv
+            _BuildingName1_edited.csv
+            BuildingName1_Elec_Energy.csv
+            BuildingName1_Elec_Power.csv
+            BuildingName1_Thrm_Energy.csv
+            BuildingName1_Thrm_Power.csv
+            BuildingName1_Wtr_Cns.csv
 ```
+### Prerequisites
 
-```
-Operational directiory
-UBCSC_data.py
-dataset
-    -> ubcv_buildings
-        -> ubcv_buildings.geojson
-        -> BuildingName
-            -> BuildingName_TypeofMeter_TypeofMeasurement.csv
-```
+### Installing
+
+## Usage 
 
 #### List_of_Col Description
 
@@ -77,3 +84,8 @@ dataset
 'SE_Facade_A' | |
 'Constr_Type'  | | Construction Material
 'Green_Status' | | Leed status
+
+### Tasks
+- [ ] Simplify the merge, fill_col(), and compute EUI process
+- [ ] Add GeoJson capability
+    - Reasech through building code -> and grab info -> fill col
