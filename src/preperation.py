@@ -36,21 +36,17 @@ class Collection:
         TP_df = pd.read_csv(self.folder_path + '/' + self.building_name + '/' + self.building_name + '_Thrm_Power.csv').set_axis(['Timestamp', 'Thrm_Power'], axis = 'columns')
         WC_df = pd.read_csv(self.folder_path + '/' + self.building_name + '/' + self.building_name + '_Wtr_Cns.csv').set_axis(['Timestamp', 'Wtr_Cns'], axis = 'columns')
 
-        # Compare timestamps to validate the time ranges.
-        if  (   
-            EE_df['Timestamp'].equals(EP_df['Timestamp']) &
-            EP_df['Timestamp'].equals(TE_df['Timestamp']) &
-            TE_df['Timestamp'].equals(TP_df['Timestamp']) &
-            TP_df['Timestamp'].equals(WC_df['Timestamp'])
-            ): error = False
-        else: error = True
-        
         # Merge dataframes if time range equals to one another.
-        if (error != True):
+        if  (   EE_df['Timestamp'].equals(EP_df['Timestamp']) &
+                EP_df['Timestamp'].equals(TE_df['Timestamp']) &
+                TE_df['Timestamp'].equals(TP_df['Timestamp']) &
+                TP_df['Timestamp'].equals(WC_df['Timestamp'])   ): 
+
             Elec_df = pd.merge(EE_df, EP_df, on=['Timestamp'], how='left')
             Thrm_df = pd.merge(TE_df, TP_df, on=['Timestamp'], how='left')
             Elec_Thrm_df = pd.merge(Elec_df, Thrm_df, on=['Timestamp'], how='left')
             m_df = pd.merge(Elec_Thrm_df, WC_df, on=['Timestamp'], how='left')
+
         else: return False
 
         return m_df
@@ -82,7 +78,7 @@ class Collection:
             geo_df['BLDG_Height'] = gjson['BLDG_HEIGHT'][index]
             geo_df['GBA'] = gjson['GBA'][index]
         else:
-            return 'Building could not be found in GeoJSON'
+            return False
 
         return geo_df
 
@@ -99,9 +95,9 @@ class Collection:
         # If Gross_Floor_Area is not empty, compute EUI
         if (eui_df['GFA'].empty): return False
         else:
-            eui_df['Elec_EUI'] = eui_df['Elec_Energy'] / eui_df['Gross_Floor_Area']
-            eui_df['Thrm_EUI'] = eui_df['Thrm_Energy'] / eui_df['Gross_Floor_Area']
-            eui_df['Wtr_WUI'] = eui_df['Wtr_Cns'] / eui_df['Gross_Floor_Area']
+            eui_df['Elec_EUI'] = eui_df['Elec_Energy'] / eui_df['GFA']
+            eui_df['Thrm_EUI'] = eui_df['Thrm_Energy'] / eui_df['GFA']
+            eui_df['Wtr_WUI'] = eui_df['Wtr_Cns'] / eui_df['GFA']
             eui_df['Total_EUI_excwtr'] = eui_df['Thrm_EUI'] + eui_df['Elec_EUI']
 
         return eui_df
@@ -149,30 +145,14 @@ class Transformation:
         df = df.reindex(columns=col)    
 
         return df
-        
-# Configuration
-build_name = 'Hennings'
-data_dir = str(pl.Path(__file__).parent.parent.resolve()) + '/dataset'
-dir = fr'{data_dir}'
-list_of_col = [ 'BLDG_UID', 'Timestamp', 'Year', 'Month', 'Day', 'UBC_Temp', 'UBC_HDD', 'UBC_CDD', 'UBC_Humid', 
-                'Elec_Energy', 'Elec_Power', 'Elec_ConF','Thrm_Energy', 'Thrm_Power', 'Thrm_ConF','Wtr_Cns', 'Wtr_Conf'
-                'Elec_EUI', 'Thrm_EUI', 'Wtr_WUI', 'Total_EUI_excwtr',
-                'Occu_Date', 'Constr_Type', 'Condition', 'Green_Status', 'MAX_Floors', 'BLDG_Height', 
-                'GFA', 'GBA', 'FSP_Classroom', 'FSP_Lab', 'FSP_Library', 'FSP_Office',
-                'WWR', 'WFA', 'FA_SA', 'Inner_V', 'Glazing_A', 
-                'Operable_Window', 'Orientation', 'Adjacency',
-                'NW_Facade_A', 'SW_Facade_A', 'NE_Facade_A', 'SE_Facade_A'
-                ]
 
-# Execution
-a = Collection(build_name, data_dir)
-b = a.skyspark()
+def csv_output(path, name, dataframe, function):
+        dataframe.to_csv(path + '/' +  name + '/_' + name + ' _' + function + '.csv', index=False) 
 
-a2 = Transformation(b)
-c = a2.parse_arrange(list_of_col)
 
-d = a.geojson(c)
-print(d)
+
+
+
 
 
 

@@ -85,6 +85,7 @@ dataset/
 'Green_Status' | | Leed status
 
 ### Tasks
+- [ ] Use flags to help detect error (flags.txt)
 - [ ] Simplify the merge, fill_col(), and compute EUI process
-- [ ] Add GeoJson capability
+- [x] Add GeoJson capability
     - Reasech through building code -> and grab info -> fill col
