@@ -1,9 +1,11 @@
 import preperation as prep
 
-# Configuration
-build_name = 'Hennings' # Make sure that the folder name & file name starts with the same building name.s
+# Configure dir
 data_dir = str(prep.pl.Path(__file__).parent.parent.resolve()) + '/dataset'
 dir = fr'{data_dir}'
+
+# Configure name & columns
+build_name = 'Hennings' # Make sure that the folder name & file name starts with the same building name.s
 list_of_col = [ 'BLDG_UID', 'Timestamp', 'Year', 'Month', 'Day', 'UBC_Temp', 'UBC_HDD', 'UBC_CDD', 'UBC_Humid', 
                 'Elec_Energy', 'Elec_Power', 'Elec_ConF','Thrm_Energy', 'Thrm_Power', 'Thrm_ConF','Wtr_Cns', 'Wtr_Conf'
                 'Elec_EUI', 'Thrm_EUI', 'Wtr_WUI', 'Total_EUI_excwtr',
@@ -13,6 +15,7 @@ list_of_col = [ 'BLDG_UID', 'Timestamp', 'Year', 'Month', 'Day', 'UBC_Temp', 'UB
                 'Operable_Window', 'Orientation', 'Adjacency',
                 'NW_Facade_A', 'SW_Facade_A', 'NE_Facade_A', 'SE_Facade_A'
                 ]
+
 
 # Execution
 a = prep.Collection(build_name, data_dir)
