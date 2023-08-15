@@ -18,12 +18,22 @@ list_of_col = [ 'BLDG_UID', 'Timestamp', 'Year', 'Month', 'Day', 'UBC_Temp', 'UB
 
 
 # Execution
+# 1
 a = prep.Collection(build_name, data_dir)
 b = a.skyspark()
+if b ==  False: print("Time range of the merging files does not equal one another.")
 
+# 2
 a2 = prep.Transformation(b)
 c = a2.parse_arrange(list_of_col)
 
+# 3
 d = a.geojson(c)
-e = a.eui(d)
+if d == False: print("Building name could not be found in GeoJSON file.")
+
+# 4
+e = a.eui(d) 
+if e == False: print("Please enter a value for column GFA.")
+
+# 5
 prep.csv_output(dir, build_name, e, 'edit')

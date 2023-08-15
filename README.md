@@ -54,32 +54,31 @@ dataset/
 
 ## Usage <a name = "usage"></a>
 ```python
-Merge the 5 files under the folder 
+# 1. Merge the 5 files under the folder 
 a = prep.Collection(build_name, data_dir)
 b = a.skyspark()
 ```
 
 ```python
-Parse units and re-arrange columns
+# 2. Parse units and re-arrange columns
 a2 = prep.Transformation(b)
 c = a2.parse_arrange(list_of_col)
 ```
 
 ```python
-Get data from geojson
+# 3. Get data from geojson
 d = a.geojson(c)
 ```
 
 ```python
-Compute EUI after entering the GFA data
+# 4. Compute EUI after entering the GFA data
 e = a.eui(d)
 ```
 
 ```python
-Output dataframe as .csv file
+# 5. Output dataframe as .csv file
 prep.csv_output(dir, build_name, e, 'edit')
 ```
-
 #### List_of_Col Description
 
 
