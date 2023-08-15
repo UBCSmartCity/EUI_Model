@@ -11,7 +11,7 @@ The goal of this research project is to advance the accuracy of energy demand fo
 This script automates and simplifies the process of acquiring data from both Skyspark and GeoJSON.
 
 ## Getting Started <a name = "getting_started"></a>
-#### Operational Directiory
+#### Directory Overview
 ```
 EUI_MODEL
 README.md
@@ -35,9 +35,11 @@ dataset/
 ```
 
 ### Prerequisites
+
+#### Packages
 Pandas & GeoPandas
 
-Folder directory example:
+#### Data Folder Directory
 ```
 dataset/
     ubcv_buildings/
@@ -51,8 +53,28 @@ dataset/
             Hennings_Wtr_Cns.csv
 ```
 
-
 ## Usage <a name = "usage"></a>
+
+```python
+# Configure dir
+data_dir = str(prep.pl.Path(__file__).parent.parent.resolve()) + '/dataset'
+dir = fr'{data_dir}'
+```
+
+```python
+# Set building name and columns. View section below for more information about what each column represents. 
+build_name = 'Hennings'
+list_of_col = [ 'BLDG_UID', 'Timestamp', 'Year', 'Month', 'Day', 'UBC_Temp', 'UBC_HDD', 'UBC_CDD', 'UBC_Humid', 
+                'Elec_Energy', 'Elec_Power', 'Elec_ConF','Thrm_Energy', 'Thrm_Power', 'Thrm_ConF','Wtr_Cns', 'Wtr_Conf'
+                'Elec_EUI', 'Thrm_EUI', 'Wtr_WUI', 'Total_EUI_excwtr',
+                'Occu_Date', 'Constr_Type', 'Condition', 'Green_Status', 'MAX_Floors', 'BLDG_Height', 
+                'GFA', 'GBA', 'FSP_Classroom', 'FSP_Lab', 'FSP_Library', 'FSP_Office',
+                'WWR', 'WFA', 'FA_SA', 'Inner_V', 'Glazing_A', 
+                'Operable_Window', 'Orientation', 'Adjacency',
+                'NW_Facade_A', 'SW_Facade_A', 'NE_Facade_A', 'SE_Facade_A'
+                ]
+```
+
 ```python
 # 1. Merge the 5 files under the folder 
 a = prep.Collection(build_name, data_dir)
@@ -67,12 +89,12 @@ c = a2.parse_arrange(list_of_col)
 
 ```python
 # 3. Get data from geojson
-d = a.geojson(c)
+d = a.geojson(c) 
 ```
 
 ```python
 # 4. Compute EUI after entering the GFA data
-e = a.eui(d)
+e = a.eui(d) \
 ```
 
 ```python
