@@ -158,6 +158,6 @@ prep.csv_output(dir, build_name, e, 'edit')
 'SE_Facade_A' | Southeast facing building area | m |
 
 ## References <a name = "references"></a>
-[UBC Geospatial Opendata](https://github.com/UBCGeodata/ubc-geospatial-opendata)
-[UBC Skyspark](https://skyspark.energy.ubc.ca/)
+- [UBC Geospatial Opendata](https://github.com/UBCGeodata/ubc-geospatial-opendata)
+- [UBC Skyspark](https://skyspark.energy.ubc.ca/)
 
