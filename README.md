@@ -5,6 +5,7 @@ This research project aims to enhance the energy demand prediction for a cluster
 + [About](#about)
 + [Getting Started](#getting_started)
 + [Usage](#usage)
++ [References](#references)
 
 ## About
 This script simplifies the process of data acquisition and transformation.
@@ -155,3 +156,8 @@ prep.csv_output(dir, build_name, e, 'edit')
 'SW_Facade_A' | Southwest facing building area | m |
 'NE_Facade_A' | Northeast facing building area | m |
 'SE_Facade_A' | Southeast facing building area | m |
+
+## References <a name = "references"></a>
+[UBC Geospatial Opendata](https://github.com/UBCGeodata/ubc-geospatial-opendata)
+[UBC Skyspark](https://skyspark.energy.ubc.ca/)
+
