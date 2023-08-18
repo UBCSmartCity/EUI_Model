@@ -134,12 +134,9 @@ class Transformation:
                 df = df.drop('temp', axis = 1)
 
             # Remove meter units.
-            if ('Energy' in column):
-                df[column] = df[column].replace('kWh', '', regex = True)
-            if ('Power' in column):
-                df[column] = df[column].replace('kW', '', regex = True) 
-            if ('Cns' in column):
-                df[column] = df[column].replace('m³', '', regex = True)
+            if ('Energy' in column): df[column] = df[column].replace('kWh', '', regex = True)
+            if ('Power' in column): df[column] = df[column].replace('kW', '', regex = True)
+            if ('Cns' in column): df[column] = df[column].replace('m³', '', regex = True)
 
         # Re-arrange the dataframe
         df = df.reindex(columns=col)    
@@ -148,11 +145,6 @@ class Transformation:
 
 def csv_output(path, name, dataframe, function):
         dataframe.to_csv(path + '/' +  name + '/_' + name + ' _' + function + '.csv', index=False) 
-
-
-
-
-
 
 
 
