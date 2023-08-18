@@ -1,4 +1,5 @@
 # EUI_Model
+This research project aims to enhance the energy demand prediction for a cluster of buildings, consequently mitigating the fluctuations in assessing base load and storage needs for intermittent power sources. 
 
 ## Table of Contents
 + [About](#about)
@@ -6,9 +7,7 @@
 + [Usage](#usage)
 
 ## About
-The goal of this research project is to advance the accuracy of energy demand forecasting for a group of buildings, thereby minimizing the variability in estimating base load and storage requirements for a given area. And doing so, one can significantly reduce the costs associated with incorporating renewable energy into existing energy systems or developing a new sustainable infrastructure.
-
-This script automates and simplifies the process of acquiring data from both Skyspark and GeoJSON.
+This script simplifies the process of data acquisition and transformation.
 
 ## Getting Started <a name = "getting_started"></a>
 #### Directory Overview
@@ -156,8 +155,3 @@ prep.csv_output(dir, build_name, e, 'edit')
 'SW_Facade_A' | Southwest facing building area | m |
 'NE_Facade_A' | Northeast facing building area | m |
 'SE_Facade_A' | Southeast facing building area | m |
-
-### Tasks
-- [x] Simplify the merge, fill_col(), and compute EUI process
-- [x] Add GeoJson capability
-    - Reasech through building code -> and grab info -> fill col
