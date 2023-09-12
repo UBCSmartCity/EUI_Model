@@ -92,14 +92,18 @@ class Collection:
         # Read dataframe
         eui_df = dataframe
 
+        # Get GFA from the user
+        eui_df['GFA'] = float(input("Enter GFA"))
+        while input("Confirm (y/n)") == 'n':
+            eui_df['GFA'] = float(input("Enter GFA"))
+
         # If Gross_Floor_Area is not empty, compute EUI
         if (eui_df['GFA'].empty): return False
         else:
-            eui_df['Elec_EUI'] = eui_df['Elec_Energy'] / eui_df['GFA']
-            eui_df['Thrm_EUI'] = eui_df['Thrm_Energy'] / eui_df['GFA']
-            eui_df['Wtr_WUI'] = eui_df['Wtr_Cns'] / eui_df['GFA']
+            eui_df['Elec_EUI'] = eui_df['Elec_Energy'].astype(float) / eui_df['GFA']
+            eui_df['Thrm_EUI'] = eui_df['Thrm_Energy'].astype(float) / eui_df['GFA']
+            eui_df['Wtr_WUI'] = eui_df['Wtr_Cns'].astype(float) / eui_df['GFA']
             eui_df['Total_EUI_excwtr'] = eui_df['Thrm_EUI'] + eui_df['Elec_EUI']
-
         return eui_df
 
 class Transformation:
@@ -144,7 +148,7 @@ class Transformation:
         return df
 
 def csv_output(path, name, dataframe, function):
-        dataframe.to_csv(path + '/' +  name + '/_' + name + ' _' + function + '.csv', index=False) 
+        dataframe.to_csv(path + '/' +  name + '/_' + name + '_' + function + '.csv', index=False) 
 
 
 

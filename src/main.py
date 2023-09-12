@@ -5,9 +5,9 @@ data_dir = str(prep.pl.Path(__file__).parent.parent.resolve()) + '/dataset'
 dir = fr'{data_dir}'
 
 # Configure name & columns
-build_name = 'Hennings' # Make sure that the folder name & file name starts with the same building name.s
+build_name = 'Alumni Centre' # Make sure that the folder name & file name starts with the same building name.s
 list_of_col = [ 'BLDG_UID', 'Timestamp', 'Year', 'Month', 'Day', 'UBC_Temp', 'UBC_HDD', 'UBC_CDD', 'UBC_Humid', 
-                'Elec_Energy', 'Elec_Power', 'Elec_ConF','Thrm_Energy', 'Thrm_Power', 'Thrm_ConF','Wtr_Cns', 'Wtr_Conf'
+                'Elec_Energy', 'Elec_Power', 'Elec_ConF','Thrm_Energy', 'Thrm_Power', 'Thrm_ConF','Wtr_Cns', 'Wtr_Conf',
                 'Elec_EUI', 'Thrm_EUI', 'Wtr_WUI', 'Total_EUI_excwtr',
                 'Occu_Date', 'Constr_Type', 'Condition', 'Green_Status', 'MAX_Floors', 
                 'FSP_Classroom', 'FSP_Lab', 'FSP_Library', 'FSP_Office', 

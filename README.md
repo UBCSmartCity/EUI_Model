@@ -101,7 +101,7 @@ e = a.eui(d) \
 prep.csv_output(dir, build_name, e, 'edit')
 ```
 #### List_of_Col Description
-*Italic descriptions are from [UBC](https://github.com/UBCGeodata/ubc-geospatial-opendata/blob/master/ubcv/locations/metadata/ubcv_buildings_fields.csv)*
+*Italic descriptions are from [UBC Geospatial Opendata](https://github.com/UBCGeodata/ubc-geospatial-opendata/blob/master/ubcv/locations/metadata/ubcv_buildings_fields.csv)*
 
 ##### Generic
 | Column  |Description | Unit |  
