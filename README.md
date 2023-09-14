@@ -74,6 +74,7 @@ list_of_col = [ 'BLDG_UID', 'Timestamp', 'Year', 'Month', 'Day', 'UBC_Temp', 'UB
                 ]
 ```
 
+### First Step (function: one)
 ```python
 # 1. Merge the 5 files under the folder 
 a = prep.Collection(build_name, data_dir)
@@ -100,6 +101,19 @@ e = a.eui(d) \
 # 5. Output dataframe as .csv file
 prep.csv_output(dir, build_name, e, 'edit')
 ```
+
+### Second Step (function: two)
+```python
+# 1. Manually change the values by reading it off of UBC Skyspark
+df['Elec_ConF'] = 0.9999
+df['Thrm_ConF'] = 0.9999
+df['Wtr_ConF'] = 0.9999
+df['FSP_Classroom'] = 0.06
+df['FSP_Lab'] = 0.05
+df['FSP_Library'] = 0
+df['FSP_Office'] = 0.46
+```
+
 #### List_of_Col Description
 *Italic descriptions are from [UBC Geospatial Opendata](https://github.com/UBCGeodata/ubc-geospatial-opendata/blob/master/ubcv/locations/metadata/ubcv_buildings_fields.csv)*
 

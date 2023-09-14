@@ -18,19 +18,35 @@ list_of_col = [ 'BLDG_UID', 'Timestamp', 'Year', 'Month', 'Day', 'UBC_Temp', 'UB
 
 
 # Execution
-# 1
-a = prep.Collection(build_name, data_dir)
-b = a.skyspark()
+def one():
+    # 1
+    a = prep.Collection(build_name, data_dir)
+    b = a.skyspark()
 
-# 2
-a2 = prep.Transformation(b)
-c = a2.parse_arrange(list_of_col)
+    # 2
+    a2 = prep.Transformation(b)
+    c = a2.parse_arrange(list_of_col)
 
-# 3
-d = a.geojson(c)
+    # 3
+    d = a.geojson(c)
 
-# 4
-e = a.eui(d) 
+    # 4
+    e = a.eui(d) 
 
-# 5
-prep.csv_output(dir, build_name, e, 'edit')
+    # 5
+    prep.csv_output(dir, build_name, e, 'edit')
+
+# Fill columns with values from Skyspark manually
+def two():
+    df = prep.pd.read_csv(data_dir + '/' + build_name + '/' + '_' + build_name + '_edit.csv')
+    df['Elec_ConF'] = 0.9999
+    df['Thrm_ConF'] = 0.9999
+    df['Wtr_ConF'] = 0.9999
+    df['FSP_Classroom'] = 0.06
+    df['FSP_Lab'] = 0.05
+    df['FSP_Library'] = 0
+    df['FSP_Office'] = 0.46
+
+    prep.csv_output(dir, build_name, df, 'edit')
+
+two()
