@@ -161,3 +161,5 @@ prep.csv_output(dir, build_name, e, 'edit')
 - [UBC Geospatial Opendata](https://github.com/UBCGeodata/ubc-geospatial-opendata)
 - [UBC Skyspark](https://skyspark.energy.ubc.ca/)
 
+## Tools
+- https://geojson.tools/

@@ -61,20 +61,22 @@ class Collection:
         gjson = gpd.read_file(self.folder_path + '/ubcv_buildings.geojson')
 
         # Go through the GeoJSON dataframe to find the matching building name and its index.
+        # Some of the names are SHORTNAMEs instead of NAMEs.
         row = 0
+        index = 0
         for name in gjson['NAME']:
             row = row + 1
             if self.building_name in name:
                 index = row - 1
 
-        # If the index is not 433 (max index), extract and fill the corrosponding values.
-        if index != 433:
+        # If the index is not 434 (max index), extract and fill the corrosponding values.
+        if index != 434:
             geo_df['BLDG_UID'] = gjson['BLDG_UID'][index]
             geo_df['Occu_Date'] = gjson['OCCU_DATE'][index]
             geo_df['Condition'] = gjson['BLDG_CONDITION'][index]
             geo_df['Green_Status'] = gjson['GREEN_STATUS'][index]        
             geo_df['Constr_Type'] = gjson['CONSTR_TYPE'][index]
-            geo_df['Max_Floors'] = gjson['MAX_FLOORS'][index]
+            geo_df['MAX_Floors'] = gjson['MAX_FLOORS'][index]
             geo_df['BLDG_Height'] = gjson['BLDG_HEIGHT'][index]
             geo_df['GBA'] = gjson['GBA'][index]
         else:
@@ -93,17 +95,18 @@ class Collection:
         eui_df = dataframe
 
         # Get GFA from the user
-        eui_df['GFA'] = float(input("Enter GFA"))
-        while input("Confirm (y/n)") == 'n':
-            eui_df['GFA'] = float(input("Enter GFA"))
+        eui_df['GFA'] = float(input("Enter GFA: "))
+        while input("Confirm (y/n): ") == 'n':
+            eui_df['GFA'] = float(input("Enter GFA: "))
 
-        # If Gross_Floor_Area is not empty, compute EUI
-        if (eui_df['GFA'].empty): return False
+        # If Gross_Floor_Area is empty get user input, if not, compute EUI
+        if (eui_df['GFA'].isnull().values.any()): return False
         else:
             eui_df['Elec_EUI'] = eui_df['Elec_Energy'].astype(float) / eui_df['GFA']
             eui_df['Thrm_EUI'] = eui_df['Thrm_Energy'].astype(float) / eui_df['GFA']
             eui_df['Wtr_WUI'] = eui_df['Wtr_Cns'].astype(float) / eui_df['GFA']
             eui_df['Total_EUI_excwtr'] = eui_df['Thrm_EUI'] + eui_df['Elec_EUI']
+
         return eui_df
 
 class Transformation:
