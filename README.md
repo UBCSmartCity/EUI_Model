@@ -94,7 +94,7 @@ d = a.geojson(c)
 
 ```python
 # 4. Compute EUI after entering the GFA data
-e = a.eui(d) \
+e = a.eui(d)
 ```
 
 ```python
