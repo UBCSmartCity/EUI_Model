@@ -94,11 +94,6 @@ class Collection:
         # Read dataframe
         eui_df = dataframe
 
-        # Get GFA from the user
-        eui_df['GFA'] = float(input("Enter GFA: "))
-        while input("Confirm (y/n): ") == 'n':
-            eui_df['GFA'] = float(input("Enter GFA: "))
-
         # If Gross_Floor_Area is empty get user input, if not, compute EUI
         if (eui_df['GFA'].isnull().values.any()): return False
         else:

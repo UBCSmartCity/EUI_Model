@@ -74,17 +74,18 @@ list_of_col = [ 'BLDG_UID', 'Timestamp', 'Year', 'Month', 'Day', 'UBC_Temp', 'UB
                 ]
 ```
 
-### First Step (function: one)
+### Main Function (function: analyze)
 ```python
 # 1. Merge the 5 files under the folder 
-a = prep.Collection(build_name, data_dir)
-b = a.skyspark()
+m = prep.Collection(build_name, data_dir)
+b = m.skyspark()
 ```
 
 ```python
 # 2. Parse units and re-arrange columns
 a2 = prep.Transformation(b)
 c = a2.parse_arrange(list_of_col)
+
 ```
 
 ```python
@@ -93,18 +94,7 @@ d = a.geojson(c)
 ```
 
 ```python
-# 4. Compute EUI after entering the GFA data
-e = a.eui(d)
-```
-
-```python
-# 5. Output dataframe as .csv file
-prep.csv_output(dir, build_name, e, 'edit')
-```
-
-### Second Step (function: two)
-```python
-# 1. Manually change the values by reading it off of UBC Skyspark
+# 4. Manually change the values by reading it off of UBC Skyspark
 df['Elec_ConF'] = 0.9999
 df['Thrm_ConF'] = 0.9999
 df['Wtr_ConF'] = 0.9999
@@ -112,6 +102,16 @@ df['FSP_Classroom'] = 0.06
 df['FSP_Lab'] = 0.05
 df['FSP_Library'] = 0
 df['FSP_Office'] = 0.46
+```
+
+```python
+# 5. Compute EUI after entering the GFA data
+e = m.eui(d)
+```
+
+```python
+# 6. Output dataframe as .csv file
+prep.csv_output(dir, build_name, e, 'edit')
 ```
 
 #### List_of_Col Description
