@@ -95,13 +95,14 @@ d = a.geojson(c)
 
 ```python
 # 4. Manually change the values by reading it off of UBC Skyspark
-df['Elec_ConF'] = 0.9999
-df['Thrm_ConF'] = 0.9999
-df['Wtr_ConF'] = 0.9999
-df['FSP_Classroom'] = 0.06
-df['FSP_Lab'] = 0.05
-df['FSP_Library'] = 0
-df['FSP_Office'] = 0.46
+d['GFA'] = 7777
+d['Elec_ConF'] = 0.9995
+d['Thrm_ConF'] = 0.9995
+d['Wtr_ConF'] = 0.9995
+d['FSP_Classroom'] = 0.08
+d['FSP_Lab'] = 0.01
+d['FSP_Library'] = 0
+d['FSP_Office'] = 0.15
 ```
 
 ```python
