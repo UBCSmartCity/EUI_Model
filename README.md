@@ -4,9 +4,10 @@ This is a research project that aims to demonstrate a pipeline for optimizing en
 ## Table of Contents
 + [Getting Started](#getting_started)
 + [References](#references)
++ [Tools](#tools)
 
 ## Getting Started <a name = "getting_started"></a>
-### Directory Overview
+### Directory
 ```
 README.md
 LICENSE.md
@@ -33,6 +34,7 @@ dataset/
             BuildingName1_Wtr_Cns.csv
 ```
 
+### Short Introduction
 [data_aquisition.py](https://github.com/UBCSmartCity/EUI_Model/blob/main/data_aquisition/preperation.py) simplifies the data aquition process for UBC Skyspark. 
 
 [ANN Model - Building Facade Features.ipynb & Exploratory Data Analysis - Building Facade Features.ipynb](https://github.com/UBCSmartCity/EUI_Model/tree/main/ann) is the code for artificial neural network model.
