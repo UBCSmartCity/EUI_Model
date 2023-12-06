@@ -1,13 +1,12 @@
 # EUI_Model
-This is a research project that aims to enhance the energy demand prediction for a cluster of buildings, optimizing electrical load in a distribution system with intermittent power sources. 
+This is a research project that aims to demonstrate a pipeline for optimizing energy storage in a distribution system with intermittent power sources. The optimization process references a dynamic model introduced [here](https://insightmaker.com/insight/2uM6Gc38YkMwcJ1Enwoufs/Smart-Grid-Electricity-storage-and-variable-energy-pricing). For more information on the research, visit [UBC Smart City](https://ubcsmartcity.com/).
 
 ## Table of Contents
 + [Getting Started](#getting_started)
-+ [Usage](#usage)
 + [References](#references)
 
 ## Getting Started <a name = "getting_started"></a>
-#### Directory Overview
+### Directory Overview
 ```
 README.md
 LICENSE.md
@@ -34,22 +33,15 @@ dataset/
             BuildingName1_Wtr_Cns.csv
 ```
 
-## Usage <a name = "usage"></a>
-```
-[data_aquisition.py]() simplifies the data aquition process for UBC Skyspark. 
-```
+[data_aquisition.py](https://github.com/UBCSmartCity/EUI_Model/blob/main/data_aquisition/preperation.py) simplifies the data aquition process for UBC Skyspark. 
 
-```
-[ANN Model - Building Facade Features.ipynb & Exploratory Data Analysis - Building Facade Features.ipynb]() is the code for artificial neural network model.
-```
+[ANN Model - Building Facade Features.ipynb & Exploratory Data Analysis - Building Facade Features.ipynb](https://github.com/UBCSmartCity/EUI_Model/tree/main/ann) is the code for artificial neural network model.
 
-```
-[R-MURC-1.R]() is the code for multivariate time series model. 
-```
+[R-MURC-1.R](https://github.com/UBCSmartCity/EUI_Model/blob/main/mts/R-MURC-1.R) is the code for multivariate time series model. 
 
 ## References <a name = "references"></a>
 - [UBC Geospatial Opendata](https://github.com/UBCGeodata/ubc-geospatial-opendata)
 - [UBC Skyspark](https://skyspark.energy.ubc.ca/)
 
-## Tools
+## Tools <a name = "tools"></a>
 - https://geojson.tools/
